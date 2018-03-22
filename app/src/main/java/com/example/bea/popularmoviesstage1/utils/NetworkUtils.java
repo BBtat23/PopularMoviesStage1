@@ -15,7 +15,7 @@ public class NetworkUtils {
     private static String BASE_API = "http://api.themoviedb.org/3/movie/";
     private static String TOP_RATED = "top_rated";
     private static String POPULAR = "popular";
-    private static String API_KEY = "?api_key=ce4ec44da09975b3a3ade0a8cc61562c";
+    private static String API_KEY = "?api_key=xxxxxxxxxxx";
     private static String BASE_URL = "http://image.tmdb.org/t/p/";
     private static String SIZE_POSTER = "w185";
 
