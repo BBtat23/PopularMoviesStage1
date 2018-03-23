@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_id);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new MovieAdapter(movies);
         mRecyclerView.setAdapter(mAdapter);
@@ -68,23 +68,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Movie> movieObjectArrayList) {
 
-                    mAdapter.swapData(movieObjectArrayList);
-                 }
-            }
+            mAdapter.swapData(movieObjectArrayList);
+
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu,menu);
+        getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.popular){
+        if (itemId == R.id.popular) {
             new MovieAsyncTask().execute("popular");
-        }
-        else if (itemId == R.id.topRated){
+        } else if (itemId == R.id.topRated) {
             new MovieAsyncTask().execute("top_rated");
         }
         return super.onOptionsItemSelected(item);
