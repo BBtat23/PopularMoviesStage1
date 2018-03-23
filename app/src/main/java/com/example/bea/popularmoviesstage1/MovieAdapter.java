@@ -58,5 +58,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             mTextView = (TextView) itemView.findViewById(R.id.text);
             imageViewPosterPath = (ImageView) itemView.findViewById(R.id.posterPath_imageview);
         }
+         public void swapData(List<Movie> movieObjectArrayList) {
+        if (movieObjectArrayList == null || movieObjectArrayList.size() == 0)
+            return;
+        if (mMovies != null && mMovies.size() > 0)
+            mMovies.clear();
+        mMovies.addAll(movieObjectArrayList);
+        notifyDataSetChanged();
     }
 }
