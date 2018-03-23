@@ -21,21 +21,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private static URL mPosterPathImage;
     private static String mOriginalPoster;
-    private List<Movie> mMovie;
+    private static List<Movie> mMovie;
     private Context context;
 
-    public MovieAdapter(List<Movie> movies){
+    public MovieAdapter(List<Movie> movies) {
+
         mMovie = movies;
+        this.context = context;
     }
+
     @Override
     public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new MovieViewHolder(LayoutInflater.from(parent.getContext())
-        .inflate(R.layout.main_list_item,parent,false));
+                .inflate(R.layout.main_list_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
-    Movie movieObject = mMovie.get(position);
+        Movie movieObject = mMovie.get(position);
 //    String mPosterPathImageString = movieObject.getPosterPath();
 //    mPosterPathImage = NetworkUtils.buildUrlPosterPath(mPosterPathImageString);
 //        Picasso.with(context).load(String.valueOf(mPosterPathImage)).into(holder.imageViewPosterPath);
@@ -46,24 +49,28 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public int getItemCount() {
 
-            return mMovie.size();
+        return mMovie.size();
+
     }
 
-    public static class MovieViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageViewPosterPath;
         public TextView mTextView;
+
         public MovieViewHolder(View itemView) {
 
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.text);
             imageViewPosterPath = (ImageView) itemView.findViewById(R.id.posterPath_imageview);
         }
-         public void swapData(List<Movie> movieObjectArrayList) {
+
+        }
+    public void swapData(List<Movie> movieObjectArrayList) {
         if (movieObjectArrayList == null || movieObjectArrayList.size() == 0)
             return;
-        if (mMovies != null && mMovies.size() > 0)
-            mMovies.clear();
-        mMovies.addAll(movieObjectArrayList);
+        if (mMovie != null && mMovie.size() > 0)
+            mMovie.clear();
+        mMovie.addAll(movieObjectArrayList);
         notifyDataSetChanged();
     }
 }
