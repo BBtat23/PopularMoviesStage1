@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Movie> movieObjectArrayList) {
 
-                    mAdapter = new MovieAdapter(movieObjectArrayList);
+                    mAdapter.swapData(movieObjectArrayList);
                  }
             }
 
