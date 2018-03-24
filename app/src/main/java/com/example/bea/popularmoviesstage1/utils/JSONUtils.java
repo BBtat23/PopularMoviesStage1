@@ -23,7 +23,7 @@ public class JSONUtils {
         JSONArray jsonArrayMovie = jsonObjectMovie.getJSONArray("results");
         Movie objectMovie = null;
         List<Movie> movies = new ArrayList<>();
-        for (int i = 0; i < jsonArrayMovie.length() ; i++){
+        for (int i = 0; i < jsonArrayMovie.length(); i++) {
             JSONObject movieObject = jsonArrayMovie.getJSONObject(i);
             originalTitle = movieObject.getString("original_title");
             posterPath = movieObject.getString("poster_path");
@@ -31,7 +31,7 @@ public class JSONUtils {
             ratingUser = movieObject.getDouble("vote_average");
             releaseDate = movieObject.getString("release_date");
 
-            objectMovie = new Movie(originalTitle,posterPath,overView,ratingUser,releaseDate);
+            objectMovie = new Movie(originalTitle, posterPath, overView, ratingUser, releaseDate);
             movies.add(objectMovie);
         }
         return movies;
