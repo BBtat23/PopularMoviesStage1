@@ -15,13 +15,12 @@ public class NetworkUtils {
     private static String BASE_API = "http://api.themoviedb.org/3/movie/";
     private static String TOP_RATED = "top_rated";
     private static String POPULAR = "popular";
-    private static String API_KEY = "?api_key=xxxxxxxxxxx";
+    private static String API_KEY = "?api_key=ce4ec44da09975b3a3ade0a8cc61562c";
     private static String BASE_URL = "http://image.tmdb.org/t/p/";
-    private static String SIZE_POSTER = "w185";
+    private static String SIZE_POSTER = "w500";
 
 
-
-    public static URL buildUrlApi(String sortByString){
+    public static URL buildUrlApi(String sortByString) {
         Uri builtUri = Uri.parse(BASE_API).buildUpon()
                 .appendEncodedPath(sortByString)
                 .appendEncodedPath(API_KEY)
@@ -37,10 +36,10 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildUrlPosterPath(String posterPathString){
+    public static URL buildUrlPosterPath(String posterPathString) {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendPath(SIZE_POSTER)
-                .appendPath(posterPathString)
+                .appendEncodedPath(SIZE_POSTER)
+                .appendEncodedPath(posterPathString)
                 .build();
 
         URL url = null;
@@ -52,6 +51,7 @@ public class NetworkUtils {
         }
         return url;
     }
+
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
