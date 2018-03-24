@@ -1,7 +1,9 @@
 package com.example.bea.popularmoviesstage1;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +17,24 @@ import com.squareup.picasso.Target;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    private static URL mPosterPathImage;
+    private static String mPosterPathImage;
     private static String mOriginalPoster;
     private static List<Movie> mMovie;
     private Context context;
+    final private ListItemClickListener mOnclicklistener;
 
-    public MovieAdapter(List<Movie> movies) {
+    public interface ListItemClickListener{
+        void onListItemClick(int clickedItemIndex);
+    }
 
+    public MovieAdapter(Context context, List<Movie> movies, ListItemClickListener listener) {
+
+        mOnclicklistener = listener;
         mMovie = movies;
         this.context = context;
     }
@@ -39,32 +48,34 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
         Movie movieObject = mMovie.get(position);
-//    String mPosterPathImageString = movieObject.getPosterPath();
-//    mPosterPathImage = NetworkUtils.buildUrlPosterPath(mPosterPathImageString);
-//        Picasso.with(context).load(String.valueOf(mPosterPathImage)).into(holder.imageViewPosterPath);
-        mOriginalPoster = movieObject.getOriginalTitle();
-        holder.mTextView.setText(mOriginalPoster);
+        String mPosterPathImageString = movieObject.getPosterPath();
+        mPosterPathImage = NetworkUtils.buildUrlPosterPath(mPosterPathImageString).toString();
+        Log.v("MovieAdapter.java", "poster_path: " + context);
+        Picasso.with(context).load(mPosterPathImage).into(holder.imageViewPosterPath);
     }
 
     @Override
     public int getItemCount() {
-
+//        Log.v("MovieAdapter.java", "movie list size: " + mMovie.size());
         return mMovie.size();
 
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView imageViewPosterPath;
-        public TextView mTextView;
 
         public MovieViewHolder(View itemView) {
-
             super(itemView);
-            mTextView = (TextView) itemView.findViewById(R.id.text);
             imageViewPosterPath = (ImageView) itemView.findViewById(R.id.posterPath_imageview);
+            itemView.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View view) {
+            int clickedPosition = getAdapterPosition();
+            mOnclicklistener.onListItemClick(clickedPosition);
         }
+    }
     public void swapData(List<Movie> movieObjectArrayList) {
         if (movieObjectArrayList == null || movieObjectArrayList.size() == 0)
             return;
