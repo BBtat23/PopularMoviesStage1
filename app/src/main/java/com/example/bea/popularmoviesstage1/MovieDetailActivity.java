@@ -28,6 +28,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     String ratingUser;
     String overView;
     String posterPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +39,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         mRatingUser = (TextView) findViewById(R.id.rating_user);
         mOverview = (TextView) findViewById(R.id.overview);
         imageViewPosterPath = (ImageView) findViewById(R.id.poster_path);
+
+//        list_movie = (ArrayList<Movie>) getIntent().getSerializableExtra("movieObject");
 //        Log.v("MovieDetailActivity", "OriginalTitle: " + originalTitle);
         Intent movieDetailIntent = getIntent();
         originalTitle = movieDetailIntent.getStringExtra("Original Title");
@@ -52,9 +55,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         mRatingUser.setText(ratingUser);
         mOverview.setText(overView);
         Picasso.with(this).load(posterPathImage).into(imageViewPosterPath);
-
-
-
     }
 
 }
