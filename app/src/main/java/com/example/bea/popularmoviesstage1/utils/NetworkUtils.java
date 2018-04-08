@@ -1,104 +1,65 @@
-package com.example.bea.popularmoviesstage1;
-
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
+package com.example.bea.popularmoviesstage1.utils;
 
 import com.example.bea.popularmoviesstage1.data.Movie;
-import com.example.bea.popularmoviesstage1.utils.JSONUtils;
-import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-public class MovieDetailActivity extends AppCompatActivity {
 
-    TextView mOriginalTitle;
-    TextView mReleaseDate;
-    TextView mOverview;
-    TextView mRatingUser;
-    ImageView imageViewPosterPath;
-    TextView videoTextView;
-    TextView reviewTextView;
-    ArrayList<Movie> list_movie;
-    String originalTitle;
-    String releaseDate;
-    String ratingUser;
-    String overView;
-    String posterPath;
-    String idMovie;
-    String movieKey;
-    String reviewString;
+public class JSONUtils {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie);
+    public static List<Movie> JSONUtilsMovie(String jsonMovie) throws JSONException {
+        String originalTitle = null;
+        String posterPath = null;
+        String overView = null;
+        Double ratingUser = null;
+        String releaseDate = null;
+        String idMovieString = null;
 
-        mOriginalTitle = (TextView) findViewById(R.id.original_title);
-        mReleaseDate = (TextView) findViewById(R.id.release_date);
-        mRatingUser = (TextView) findViewById(R.id.rating_user);
-        mOverview = (TextView) findViewById(R.id.overview);
-        imageViewPosterPath = (ImageView) findViewById(R.id.poster_path);
-        videoTextView = (TextView) findViewById(R.id.trailer1);
-        reviewTextView = (TextView)findViewById(R.id.reviews);
 
-//        list_movie = (ArrayList<Movie>) getIntent().getSerializableExtra("movieObject");
-//        Log.v("MovieDetailActivity", "OriginalTitle: " + originalTitle);
-        Intent movieDetailIntent = getIntent();
-        originalTitle = movieDetailIntent.getStringExtra("Original Title");
-        releaseDate = movieDetailIntent.getStringExtra("Release Date");
-        ratingUser = movieDetailIntent.getStringExtra("Rating User");
-        overView = movieDetailIntent.getStringExtra("OverView");
-        posterPath = movieDetailIntent.getStringExtra("PosterPath");
-        idMovie = movieDetailIntent.getStringExtra("Id Movie");
-
-        String posterPathImage = NetworkUtils.buildUrlPosterPath(posterPath).toString();
-
-        mOriginalTitle.setText(originalTitle);
-        mReleaseDate.setText(releaseDate);
-        mRatingUser.setText(ratingUser);
-        mOverview.setText(overView);
-        Picasso.with(this).load(posterPathImage).into(imageViewPosterPath);
-
-        videoTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    movieKey = new MainActivity.VideoMovieAsyncTask().execute(idMovie).get();//Ejecutamos la MovieAsyncTask para conseguir la key del video
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                watchVideoTrailer(movieKey);
-            }
-        });
-
-        try {
-            reviewString = new MainActivity.ReviewMovieAsyncTask().execute(idMovie).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+        JSONObject jsonObjectMovie = new JSONObject(jsonMovie);
+        JSONArray jsonArrayMovie = jsonObjectMovie.getJSONArray("results");
+        Movie objectMovie = null;
+        List<Movie> movies = new ArrayList<>();
+        for (int i = 0; i < jsonArrayMovie.length(); i++) {
+            JSONObject movieObject = jsonArrayMovie.getJSONObject(i);
+            originalTitle = movieObject.getString("original_title");
+            posterPath = movieObject.getString("poster_path");
+            overView = movieObject.getString("overview");
+            ratingUser = movieObject.getDouble("vote_average");
+            releaseDate = movieObject.getString("release_date");
+            int idMovie = movieObject.getInt("id");
+            idMovieString = String.valueOf(idMovie);
+            objectMovie = new Movie(originalTitle, posterPath, overView, ratingUser, releaseDate,idMovieString);
+            movies.add(objectMovie);
         }
-        reviewTextView.setText(reviewString);
+        return movies;
     }
-    public void watchVideoTrailer(String movieKey) {
-        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://www.youtube.com/watch?v=" + movieKey));
-        startActivity(youtubeIntent);
 
+    public static String movieVideoKey (String movieVideoString) throws JSONException {
+        String videoKeyString = null;
+        JSONObject jsonObjectIdMovie = new JSONObject(movieVideoString);
+        JSONArray idMovieJsonArray = jsonObjectIdMovie.getJSONArray("results");
+        for (int i = 0; i < idMovieJsonArray.length(); i++){
+            JSONObject idMovieObject = idMovieJsonArray.getJSONObject(i);
+            videoKeyString = idMovieObject.getString("key");
+        }
+        return videoKeyString;
+    }
 
+    public static String movieReview (String movieReviewString) throws JSONException {
+        JSONObject jsonObjectReview = new JSONObject(movieReviewString);
+        JSONArray jsonArrayReview = jsonObjectReview.getJSONArray("results");
+        String reviewString = null;
+        for (int i = 0; i < jsonArrayReview.length(); i++){
+            JSONObject reviewObject = jsonArrayReview.getJSONObject(i);
+            reviewString = reviewObject.getString("content");
+        }
+        return reviewString;
     }
 }
