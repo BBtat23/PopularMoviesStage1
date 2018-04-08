@@ -119,6 +119,28 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         }
     }
 
+    public static class ReviewMovieAsyncTask extends AsyncTask<String,Void,String>{
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String idMovie = strings[0];
+
+            String reviewMovieString = null;
+            String reviewMovieUrl =NetworkUtils.buildUrlReviewMovie(idMovie).toString();
+            try {
+                reviewMovieString = JSONUtils.movieReview(reviewMovieUrl);
+                return reviewMovieString;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return reviewMovieString;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
