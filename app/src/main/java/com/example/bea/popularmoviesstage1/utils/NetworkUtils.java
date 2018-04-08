@@ -1,109 +1,104 @@
-package com.example.bea.popularmoviesstage1.utils;
+package com.example.bea.popularmoviesstage1;
 
-
+import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import com.example.bea.popularmoviesstage1.data.Movie;
+import com.example.bea.popularmoviesstage1.utils.JSONUtils;
+import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import java.net.URL;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class NetworkUtils {
+public class MovieDetailActivity extends AppCompatActivity {
 
-    private static String BASE_API = "http://api.themoviedb.org/3/movie/";
-    private static String API_KEY = "ce4ec44da09975b3a3ade0a8cc61562c";
-    private static String apiKey = "api_key";
+    TextView mOriginalTitle;
+    TextView mReleaseDate;
+    TextView mOverview;
+    TextView mRatingUser;
+    ImageView imageViewPosterPath;
+    TextView videoTextView;
+    TextView reviewTextView;
+    ArrayList<Movie> list_movie;
+    String originalTitle;
+    String releaseDate;
+    String ratingUser;
+    String overView;
+    String posterPath;
+    String idMovie;
+    String movieKey;
+    String reviewString;
 
-    private static String BASE_URL = "http://image.tmdb.org/t/p/";
-    private static String SIZE_POSTER = "w500";
-    private static String VIDEO_MOVIE = "videos";
-    private static String REVIEWS_MOVIE = "reviews";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_movie);
 
+        mOriginalTitle = (TextView) findViewById(R.id.original_title);
+        mReleaseDate = (TextView) findViewById(R.id.release_date);
+        mRatingUser = (TextView) findViewById(R.id.rating_user);
+        mOverview = (TextView) findViewById(R.id.overview);
+        imageViewPosterPath = (ImageView) findViewById(R.id.poster_path);
+        videoTextView = (TextView) findViewById(R.id.trailer1);
+        reviewTextView = (TextView)findViewById(R.id.reviews);
 
-    public static URL buildUrlApi(String sortByString) {
-        Uri builtUri = Uri.parse(BASE_API).buildUpon()
-                .appendEncodedPath(sortByString)
-                .appendQueryParameter(apiKey,API_KEY)
-                .build();
+//        list_movie = (ArrayList<Movie>) getIntent().getSerializableExtra("movieObject");
+//        Log.v("MovieDetailActivity", "OriginalTitle: " + originalTitle);
+        Intent movieDetailIntent = getIntent();
+        originalTitle = movieDetailIntent.getStringExtra("Original Title");
+        releaseDate = movieDetailIntent.getStringExtra("Release Date");
+        ratingUser = movieDetailIntent.getStringExtra("Rating User");
+        overView = movieDetailIntent.getStringExtra("OverView");
+        posterPath = movieDetailIntent.getStringExtra("PosterPath");
+        idMovie = movieDetailIntent.getStringExtra("Id Movie");
 
-        URL url = null;
+        String posterPathImage = NetworkUtils.buildUrlPosterPath(posterPath).toString();
 
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
-    }
+        mOriginalTitle.setText(originalTitle);
+        mReleaseDate.setText(releaseDate);
+        mRatingUser.setText(ratingUser);
+        mOverview.setText(overView);
+        Picasso.with(this).load(posterPathImage).into(imageViewPosterPath);
 
-    public static URL buildUrlPosterPath(String posterPathString) {
-        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                .appendEncodedPath(SIZE_POSTER)
-                .appendEncodedPath(posterPathString)
-                .build();
-
-        URL url = null;
-
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
-    }
-
-    public static URL buildUrlVideoMovie(String idMovieString){
-        Uri builtUri = Uri.parse(BASE_API).buildUpon()
-                .appendEncodedPath(idMovieString)
-                .appendEncodedPath(VIDEO_MOVIE)
-                .appendQueryParameter(apiKey,API_KEY)
-                .build();
-
-        URL url = null;
-
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
-    }
-
-    public static URL buildUrlReviewMovie(String idMovieString){
-        Uri builtUri = Uri.parse(BASE_API).buildUpon()
-                .appendEncodedPath(idMovieString)
-                .appendEncodedPath(REVIEWS_MOVIE)
-                .appendQueryParameter(apiKey,API_KEY)
-                .build();
-
-        URL url = null;
-
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
-    }
-
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
-
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
+        videoTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    movieKey = new MainActivity.VideoMovieAsyncTask().execute(idMovie).get();//Ejecutamos la MovieAsyncTask para conseguir la key del video
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                watchVideoTrailer(movieKey);
             }
-        } finally {
-            urlConnection.disconnect();
+        });
+
+        try {
+            reviewString = new MainActivity.ReviewMovieAsyncTask().execute(idMovie).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
+        reviewTextView.setText(reviewString);
+    }
+    public void watchVideoTrailer(String movieKey) {
+        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("https://www.youtube.com/watch?v=" + movieKey));
+        startActivity(youtubeIntent);
+
+
     }
 }
