@@ -13,11 +13,11 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private static String BASE_API = "http://api.themoviedb.org/3/movie/";
-    private static String TOP_RATED = "top_rated";
-    private static String POPULAR = "popular";
-    private static String API_KEY = "?api_key=XXX";
+    private static String API_KEY = "?api_key=ce4ec44da09975b3a3ade0a8cc61562c";
     private static String BASE_URL = "http://image.tmdb.org/t/p/";
     private static String SIZE_POSTER = "w500";
+    private static String VIDEO_MOVIE = "videos";
+    private static String REVIEWS_MOVIE = "reviews";
 
 
     public static URL buildUrlApi(String sortByString) {
@@ -40,6 +40,40 @@ public class NetworkUtils {
         Uri builtUri = Uri.parse(BASE_URL).buildUpon()
                 .appendEncodedPath(SIZE_POSTER)
                 .appendEncodedPath(posterPathString)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    public static URL buildUrlVideoMovie(String idMovieString){
+        Uri builtUri = Uri.parse(BASE_API).buildUpon()
+                .appendPath(idMovieString)
+                .appendPath(VIDEO_MOVIE)
+                .appendPath(API_KEY)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    public static URL buildUrlReviewMovie(String idMovieString){
+        Uri builtUri = Uri.parse(BASE_API).buildUpon()
+                .appendEncodedPath(idMovieString)
+                .appendEncodedPath(REVIEWS_MOVIE)
+                .appendEncodedPath(API_KEY)
                 .build();
 
         URL url = null;
