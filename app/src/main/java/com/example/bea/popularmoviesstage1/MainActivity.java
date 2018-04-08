@@ -16,6 +16,9 @@ import com.example.bea.popularmoviesstage1.data.Movie;
 import com.example.bea.popularmoviesstage1.utils.JSONUtils;
 import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     private List<Movie> movies = new ArrayList<>();
     private MovieAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private Toast mToast;
 
 
     @Override
@@ -52,12 +54,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         String mRatingUser = String.valueOf(movies.get(clickedItemIndex).getRatingUser());
         String mOverView = movies.get(clickedItemIndex).getOverview();
         String mPosterPath = movies.get(clickedItemIndex).getPosterPath();
+        String mIdMovie = movies.get(clickedItemIndex).getIdMovie();
 //        Log.v("MainActivity","list_movie value:" + movies.size());
         intent.putExtra("Original Title",mOriginalTitle);
         intent.putExtra("Release Date",mReleaseDate);
         intent.putExtra("Rating User",mRatingUser);
         intent.putExtra("OverView", mOverView);
         intent.putExtra("PosterPath",mPosterPath);
+        intent.putExtra("Id Movie",mIdMovie);
+
         startActivity(intent);
     }
 
@@ -87,6 +92,30 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
             mAdapter.swapData(movieObjectArrayList);
 
+        }
+    }
+
+    public static class VideoMovieAsyncTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String idMovie = strings[0];//This is the idMovie String that I will pass from JSONUtils
+
+            URL urlVideoMovie = NetworkUtils.buildUrlVideoMovie(idMovie);//I build URL videoMovie
+            try {
+                String videoMovieConnection = NetworkUtils.getResponseFromHttpUrl(urlVideoMovie);//I get the connection with the API in the video's section
+                String videoMovieString = JSONUtils.movieVideoKey(videoMovieConnection);
+                Log.v("MainActivity", "El valor de videoMovieString es: " + videoMovieString);
+                return videoMovieString;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
         }
     }
 
