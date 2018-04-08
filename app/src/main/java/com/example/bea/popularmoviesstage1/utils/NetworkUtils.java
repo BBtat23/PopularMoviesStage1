@@ -13,7 +13,9 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private static String BASE_API = "http://api.themoviedb.org/3/movie/";
-    private static String API_KEY = "?api_key=ce4ec44da09975b3a3ade0a8cc61562c";
+    private static String API_KEY = "ce4ec44da09975b3a3ade0a8cc61562c";
+    private static String apiKey = "api_key";
+
     private static String BASE_URL = "http://image.tmdb.org/t/p/";
     private static String SIZE_POSTER = "w500";
     private static String VIDEO_MOVIE = "videos";
@@ -23,7 +25,7 @@ public class NetworkUtils {
     public static URL buildUrlApi(String sortByString) {
         Uri builtUri = Uri.parse(BASE_API).buildUpon()
                 .appendEncodedPath(sortByString)
-                .appendEncodedPath(API_KEY)
+                .appendQueryParameter(apiKey,API_KEY)
                 .build();
 
         URL url = null;
@@ -54,9 +56,9 @@ public class NetworkUtils {
 
     public static URL buildUrlVideoMovie(String idMovieString){
         Uri builtUri = Uri.parse(BASE_API).buildUpon()
-                .appendPath(idMovieString)
-                .appendPath(VIDEO_MOVIE)
-                .appendPath(API_KEY)
+                .appendEncodedPath(idMovieString)
+                .appendEncodedPath(VIDEO_MOVIE)
+                .appendQueryParameter(apiKey,API_KEY)
                 .build();
 
         URL url = null;
@@ -73,7 +75,7 @@ public class NetworkUtils {
         Uri builtUri = Uri.parse(BASE_API).buildUpon()
                 .appendEncodedPath(idMovieString)
                 .appendEncodedPath(REVIEWS_MOVIE)
-                .appendEncodedPath(API_KEY)
+                .appendQueryParameter(apiKey,API_KEY)
                 .build();
 
         URL url = null;
