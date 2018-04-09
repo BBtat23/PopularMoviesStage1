@@ -1,3 +1,13 @@
+package com.example.bea.popularmoviesstage1.utils;
+
+import com.example.bea.popularmoviesstage1.data.Movie;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class JSONUtils {
@@ -40,4 +50,16 @@ public class JSONUtils {
         }
         return videoKeyString;
     }
+
+    public static String movieReview(String movieReviewString) throws JSONException {
+        String reviewKeyString = null;
+        JSONObject jsonObjectIdMovie = new JSONObject(movieReviewString);
+        JSONArray reviewJsonArray = jsonObjectIdMovie.getJSONArray("results");
+        for (int i = 0; i < reviewJsonArray.length(); i++) {
+            JSONObject reviewObject = reviewJsonArray.getJSONObject(i);
+            reviewKeyString = reviewObject.getString("content");
+        }
+        return reviewKeyString;
+    }
+
 }
