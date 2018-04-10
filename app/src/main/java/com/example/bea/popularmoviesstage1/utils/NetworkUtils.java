@@ -1,65 +1,108 @@
 package com.example.bea.popularmoviesstage1.utils;
 
-import com.example.bea.popularmoviesstage1.data.Movie;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.net.Uri;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
+
+public class NetworkUtils {
+
+    private static String BASE_API = "http://api.themoviedb.org/3/movie/";
+    private static String apiKey = "api_key";
+    private static String API_KEY = "ce4ec44da09975b3a3ade0a8cc61562c";
+    private static String BASE_URL = "http://image.tmdb.org/t/p/";
+    private static String SIZE_POSTER = "w500";
+    private static String VIDEO_MOVIE = "videos";
+    private static String REVIEWS_MOVIE = "reviews";
 
 
-public class JSONUtils {
+    public static URL buildUrlApi(String sortByString) {
+        Uri builtUri = Uri.parse(BASE_API).buildUpon()
+                .appendEncodedPath(sortByString)
+                .appendQueryParameter(apiKey,API_KEY)
+                .build();
 
-    public static List<Movie> JSONUtilsMovie(String jsonMovie) throws JSONException {
-        String originalTitle = null;
-        String posterPath = null;
-        String overView = null;
-        Double ratingUser = null;
-        String releaseDate = null;
-        String idMovieString = null;
+        URL url = null;
 
-
-        JSONObject jsonObjectMovie = new JSONObject(jsonMovie);
-        JSONArray jsonArrayMovie = jsonObjectMovie.getJSONArray("results");
-        Movie objectMovie = null;
-        List<Movie> movies = new ArrayList<>();
-        for (int i = 0; i < jsonArrayMovie.length(); i++) {
-            JSONObject movieObject = jsonArrayMovie.getJSONObject(i);
-            originalTitle = movieObject.getString("original_title");
-            posterPath = movieObject.getString("poster_path");
-            overView = movieObject.getString("overview");
-            ratingUser = movieObject.getDouble("vote_average");
-            releaseDate = movieObject.getString("release_date");
-            int idMovie = movieObject.getInt("id");
-            idMovieString = String.valueOf(idMovie);
-            objectMovie = new Movie(originalTitle, posterPath, overView, ratingUser, releaseDate,idMovieString);
-            movies.add(objectMovie);
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
-        return movies;
+        return url;
     }
 
-    public static String movieVideoKey (String movieVideoString) throws JSONException {
-        String videoKeyString = null;
-        JSONObject jsonObjectIdMovie = new JSONObject(movieVideoString);
-        JSONArray idMovieJsonArray = jsonObjectIdMovie.getJSONArray("results");
-        for (int i = 0; i < idMovieJsonArray.length(); i++){
-            JSONObject idMovieObject = idMovieJsonArray.getJSONObject(i);
-            videoKeyString = idMovieObject.getString("key");
+    public static URL buildUrlPosterPath(String posterPathString) {
+        Uri builtUri = Uri.parse(BASE_URL).buildUpon()
+                .appendEncodedPath(SIZE_POSTER)
+                .appendEncodedPath(posterPathString)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
-        return videoKeyString;
+        return url;
     }
 
-    public static String movieReview (String movieReviewString) throws JSONException {
-        JSONObject jsonObjectReview = new JSONObject(movieReviewString);
-        JSONArray jsonArrayReview = jsonObjectReview.getJSONArray("results");
-        String reviewString = null;
-        for (int i = 0; i < jsonArrayReview.length(); i++){
-            JSONObject reviewObject = jsonArrayReview.getJSONObject(i);
-            reviewString = reviewObject.getString("content");
+    public static URL buildUrlVideoMovie(String idMovieString){
+        Uri builtUri = Uri.parse(BASE_API).buildUpon()
+                .appendPath(idMovieString)
+                .appendPath(VIDEO_MOVIE)
+                .appendQueryParameter(API_KEY,apiKey)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
-        return reviewString;
+        return url;
+    }
+
+    public static URL buildUrlReviewMovie(String idMovieString){
+        Uri builtUri = Uri.parse(BASE_API).buildUpon()
+                .appendEncodedPath(idMovieString)
+                .appendEncodedPath(REVIEWS_MOVIE)
+                .appendQueryParameter(apiKey,API_KEY)
+                .build();
+
+        URL url = null;
+
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    public static String getResponseFromHttpUrl(URL url) throws IOException {
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        try {
+            InputStream in = urlConnection.getInputStream();
+
+            Scanner scanner = new Scanner(in);
+            scanner.useDelimiter("\\A");
+
+            boolean hasInput = scanner.hasNext();
+            if (hasInput) {
+                return scanner.next();
+            } else {
+                return null;
+            }
+        } finally {
+            urlConnection.disconnect();
+        }
     }
 }
