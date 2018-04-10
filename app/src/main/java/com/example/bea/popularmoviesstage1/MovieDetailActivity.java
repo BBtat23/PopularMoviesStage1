@@ -29,6 +29,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView mRatingUser;
     ImageView imageViewPosterPath;
     TextView videoTextView;
+    TextView reviewTextView;
     ArrayList<Movie> list_movie;
     String originalTitle;
     String releaseDate;
@@ -37,6 +38,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     String posterPath;
     String idMovie;
     String movieKey;
+    String reviewString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mOverview = (TextView) findViewById(R.id.overview);
         imageViewPosterPath = (ImageView) findViewById(R.id.poster_path);
         videoTextView = (TextView) findViewById(R.id.trailer1);
+        reviewTextView = (TextView) findViewById(R.id.reviews);
 
 //        list_movie = (ArrayList<Movie>) getIntent().getSerializableExtra("movieObject");
 //        Log.v("MovieDetailActivity", "OriginalTitle: " + originalTitle);
@@ -81,7 +84,16 @@ public class MovieDetailActivity extends AppCompatActivity {
                 watchVideoTrailer(movieKey);
             }
         });
+        try {
+            reviewString = new MainActivity.ReviewMovieAsyncTask().execute(idMovie).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        reviewTextView.setText(reviewString);
     }
+
     public void watchVideoTrailer(String movieKey) {
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("https://www.youtube.com/watch?v=" + movieKey));
