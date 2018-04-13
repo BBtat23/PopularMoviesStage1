@@ -57,7 +57,7 @@ public class NetworkUtils {
         Uri builtUri = Uri.parse(BASE_API).buildUpon()
                 .appendPath(idMovieString)
                 .appendPath(VIDEO_MOVIE)
-                .appendQueryParameter(API_KEY,apiKey)
+                .appendQueryParameter(apiKey,API_KEY)
                 .build();
 
         URL url = null;
