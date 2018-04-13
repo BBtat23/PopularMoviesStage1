@@ -95,18 +95,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         }
     }
 
-    public static class VideoMovieAsyncTask extends AsyncTask<String, Void, String> {
+    public static class VideoMovieAsyncTask extends AsyncTask<String, Void, ArrayList<String>> {
 
         @Override
-        protected String doInBackground(String... strings) {
+        protected ArrayList<String> doInBackground(String... strings) {
             String idMovie = strings[0];//This is the idMovie String that I will pass from JSONUtils
 
             URL urlVideoMovie = NetworkUtils.buildUrlVideoMovie(idMovie);//I build URL videoMovie
             try {
                 String videoMovieConnection = NetworkUtils.getResponseFromHttpUrl(urlVideoMovie);//I get the connection with the API in the video's section
-                String videoMovieString = JSONUtils.movieVideoKey(videoMovieConnection);
-                Log.v("MainActivity", "El valor de videoMovieString es: " + videoMovieString);
-                return videoMovieString;
+                ArrayList<String> videoMovieStringList = JSONUtils.movieVideoKey(videoMovieConnection);
+                return videoMovieStringList;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -114,32 +113,33 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-    }
+        protected void onPostExecute(ArrayList<String> movieVideoArrayList) {
+            super.onPostExecute(movieVideoArrayList);
 
-    public static class ReviewMovieAsyncTask extends AsyncTask<String,Void,String>{
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            String idMovie = strings[0];
-
-            String reviewMovieString = null;
-            String reviewMovieUrl =NetworkUtils.buildUrlReviewMovie(idMovie).toString();
-            try {
-                reviewMovieString = JSONUtils.movieReview(reviewMovieUrl);
-                return reviewMovieString;
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-            return reviewMovieString;
         }
-    }
+
+//    public static class ReviewMovieAsyncTask extends AsyncTask<String,Void,String>{
+//        @Override
+//        protected void onPostExecute(String s) {
+//            super.onPostExecute(s);
+//        }
+//
+//        @Override
+//        protected String doInBackground(String... strings) {
+//            String idMovie = strings[0];
+//
+//            String reviewMovieString = null;
+//            String reviewMovieUrl =NetworkUtils.buildUrlReviewMovie(idMovie).toString();
+//            try {
+//                reviewMovieString = JSONUtils.movieReview(reviewMovieUrl);
+//                return reviewMovieString;
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            return reviewMovieString;
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
