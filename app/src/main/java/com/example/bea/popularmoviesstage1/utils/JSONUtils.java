@@ -39,27 +39,34 @@ public class JSONUtils {
         }
         return movies;
     }
-
-    public static String movieVideoKey (String movieVideoString) throws JSONException {
+    //    public static String movieVideoKey (String movieVideoString) throws JSONException {
+    public static ArrayList<String> movieVideoKey (String movieVideoString) throws JSONException {
         String videoKeyString = null;
+        // later we should store the key list here
+        ArrayList<String> videoKeyStringList = new ArrayList<>();
         JSONObject jsonObjectIdMovie = new JSONObject(movieVideoString);
         JSONArray idMovieJsonArray = jsonObjectIdMovie.getJSONArray("results");
         for (int i = 0; i < idMovieJsonArray.length(); i++){
             JSONObject idMovieObject = idMovieJsonArray.getJSONObject(i);
             videoKeyString = idMovieObject.getString("key");
+            // append `videoKeyString` to the end of `videoKeyStringList`
+            videoKeyStringList.add(videoKeyString);
         }
-        return videoKeyString;
+        // return videoKeyString;
+        return videoKeyStringList;
+        // we should return `videoKeyStringList`, not `videoKeyString`
     }
 
-    public static String movieReview(String movieReviewString) throws JSONException {
-        String reviewKeyString = null;
-        JSONObject jsonObjectIdMovie = new JSONObject(movieReviewString);
-        JSONArray reviewJsonArray = jsonObjectIdMovie.getJSONArray("results");
-        for (int i = 0; i < reviewJsonArray.length(); i++) {
-            JSONObject reviewObject = reviewJsonArray.getJSONObject(i);
-            reviewKeyString = reviewObject.getString("content");
-        }
-        return reviewKeyString;
-    }
+//    public static ArrayList<String> movieReview(String movieReviewString) throws JSONException {
+//        String reviewKeyString = null;
+//        ArrayList<String> reviewStringList = new ArrayList<>();
+//        JSONObject jsonObjectIdMovie = new JSONObject(movieReviewString);
+//        JSONArray reviewJsonArray = jsonObjectIdMovie.getJSONArray("results");
+//        for (int i = 0; i < reviewJsonArray.length(); i++) {
+//            JSONObject reviewObject = reviewJsonArray.getJSONObject(i);
+//            reviewKeyString = reviewObject.getString("content");
+//        }
+//        return reviewKeyString;
+//    }
 
 }
