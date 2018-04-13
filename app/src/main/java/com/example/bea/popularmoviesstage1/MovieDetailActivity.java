@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.bea.popularmoviesstage1.data.Movie;
@@ -30,6 +32,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     ImageView imageViewPosterPath;
     TextView videoTextView;
     TextView reviewTextView;
+    ListView listViewVideoMovie;
     ArrayList<Movie> list_movie;
     String originalTitle;
     String releaseDate;
@@ -37,7 +40,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     String overView;
     String posterPath;
     String idMovie;
-    String movieKey;
+    ArrayList<String> movieKeyStringList;
+    String movieKeyString;
     String reviewString;
 
     @Override
@@ -50,7 +54,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mRatingUser = (TextView) findViewById(R.id.rating_user);
         mOverview = (TextView) findViewById(R.id.overview);
         imageViewPosterPath = (ImageView) findViewById(R.id.poster_path);
-        videoTextView = (TextView) findViewById(R.id.trailer1);
+//        videoTextView = (TextView) findViewById(R.id.trailer1);
         reviewTextView = (TextView) findViewById(R.id.reviews);
 
 //        list_movie = (ArrayList<Movie>) getIntent().getSerializableExtra("movieObject");
@@ -71,32 +75,62 @@ public class MovieDetailActivity extends AppCompatActivity {
         mOverview.setText(overView);
         Picasso.with(this).load(posterPathImage).into(imageViewPosterPath);
 
-        videoTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    movieKey = new MainActivity.VideoMovieAsyncTask().execute(idMovie).get();//Ejecutamos la MovieAsyncTask para conseguir la key del video
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-                watchVideoTrailer(movieKey);
-            }
-        });
-        try {
-            reviewString = new MainActivity.ReviewMovieAsyncTask().execute(idMovie).get();
+
+        try {Log.v("MovieDetailActivity","AsyncTask " + movieKeyStringList);
+            movieKeyStringList = new MainActivity.VideoMovieAsyncTask().execute(idMovie).get();//Ejecutamos la MovieAsyncTask para conseguir la key del video
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        reviewTextView.setText(reviewString);
-    }
+        String[] listVideos = new String[movieKeyStringList.size()];
+        for (int i = 0; i < movieKeyStringList.size(); i++) {
+            movieKeyString = movieKeyStringList.get(i);
+            listVideos[i] = movieKeyString;
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MovieDetailActivity.this, android.R.layout.simple_list_item_1, listVideos);
+        listViewVideoMovie = (ListView) findViewById(R.id.trailer_list_view);
+        listViewVideoMovie.setAdapter(adapter);
 
-    public void watchVideoTrailer(String movieKey) {
+//        listViewVideoMovie.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//            }
+//
+//        });
+    }
+    public void watchVideoTrailer(String[] movieKey) {
         Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://www.youtube.com/watch?v=" + movieKey));
+                Uri.parse("https://www.youtube.com/watch?v=" + movieKey[0]));
         startActivity(youtubeIntent);
     }
 }
+
+//        listViewVideoMovie.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                try {
+//                    movieKeyStringList = new MainActivity.VideoMovieAsyncTask().execute(idMovie).get();//Ejecutamos la MovieAsyncTask para conseguir la key del video
+//                    for (int i = 0; i< movieKeyStringList.size(); i++){
+//                        movieKeyString = movieKeyStringList.get(i);
+//                    }
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                }
+//                watchVideoTrailer(movieKeyString);
+//
+//            }
+//        });}
+//        try {
+//            reviewString = new MainActivity.ReviewMovieAsyncTask().execute(idMovie).get();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } catch (ExecutionException e) {
+//            e.printStackTrace();
+//        }
+//        reviewTextView.setText(reviewString);
+//    }
+
+
