@@ -1,24 +1,3 @@
-package com.example.bea.popularmoviesstage1;
-
-import android.content.Context;
-import android.graphics.Rect;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.example.bea.popularmoviesstage1.data.Movie;
-import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
