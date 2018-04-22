@@ -68,12 +68,12 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/poster_path" />
 
-            <ListView
+            <com.example.bea.popularmoviesstage1.VideoListView
                 android:id="@+id/trailer_list_view"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:orientation="vertical">
-            </ListView>
+            </com.example.bea.popularmoviesstage1.VideoListView>
             <TextView
                 android:id="@+id/reviews"
                 android:layout_width="match_parent"
