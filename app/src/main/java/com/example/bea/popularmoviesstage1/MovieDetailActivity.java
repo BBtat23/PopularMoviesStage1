@@ -7,10 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.bea.popularmoviesstage1.data.Movie;
 import com.example.bea.popularmoviesstage1.utils.JSONUtils;
@@ -92,18 +94,24 @@ public class MovieDetailActivity extends AppCompatActivity {
         listViewVideoMovie = (ListView) findViewById(R.id.trailer_list_view);
         listViewVideoMovie.setAdapter(adapter);
 
-//        listViewVideoMovie.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//            }
-//
-//        });
-    }
-    public void watchVideoTrailer(String[] movieKey) {
-        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
-                Uri.parse("https://www.youtube.com/watch?v=" + movieKey[0]));
-        startActivity(youtubeIntent);
-    }
+       listViewVideoMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+               //Here I take the text from the listView depending on the position
+               String videoString = (String)adapterView.getItemAtPosition(i);
+               //I make an intent to launch youtube app and make the url
+               Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com/watch?v=" + videoString));
+               //Launch the intent
+               startActivity(youtubeIntent);
+           }
+       });
+        }
+
+//    public void watchVideoTrailer(String movieKey) {
+//        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
+//                Uri.parse("https://www.youtube.com/watch?v=" + movieKey));
+//        startActivity(youtubeIntent);
+//    }
 }
 
 //        listViewVideoMovie.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +139,4 @@ public class MovieDetailActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 //        reviewTextView.setText(reviewString);
-//    }
-
-
+//}
