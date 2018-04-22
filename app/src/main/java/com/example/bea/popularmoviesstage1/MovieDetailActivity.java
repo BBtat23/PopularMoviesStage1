@@ -35,6 +35,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView videoTextView;
     TextView reviewTextView;
     ListView listViewVideoMovie;
+    ListView listViewReviewMovie;
     ArrayList<Movie> list_movie;
     String originalTitle;
     String releaseDate;
@@ -43,6 +44,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     String posterPath;
     String idMovie;
     ArrayList<String> movieKeyStringList;
+    ArrayList<String> movieKeyReviewList;
     String movieKeyString;
     String reviewString;
 
@@ -57,7 +59,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mOverview = (TextView) findViewById(R.id.overview);
         imageViewPosterPath = (ImageView) findViewById(R.id.poster_path);
 //        videoTextView = (TextView) findViewById(R.id.trailer1);
-        reviewTextView = (TextView) findViewById(R.id.reviews);
+//        reviewTextView = (TextView) findViewById(R.id.reviews);
 
 //        list_movie = (ArrayList<Movie>) getIntent().getSerializableExtra("movieObject");
 //        Log.v("MovieDetailActivity", "OriginalTitle: " + originalTitle);
@@ -105,7 +107,23 @@ public class MovieDetailActivity extends AppCompatActivity {
                startActivity(youtubeIntent);
            }
        });
+        try {
+            movieKeyReviewList = new MainActivity.ReviewMovieAsyncTask().execute(idMovie).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
+        String [] listReviews = new String[movieKeyReviewList.size()];
+        for (int i = 0; i < movieKeyReviewList.size(); i++){
+            reviewString = movieKeyReviewList.get(i);
+            listReviews[i] = reviewString;
+        }
+
+        ArrayAdapter<String> adapterReview = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listReviews);
+        listViewReviewMovie = (ListView) findViewById(R.id.reviews_list_view);
+        listViewReviewMovie.setAdapter(adapterReview);
+    }
 
 //    public void watchVideoTrailer(String movieKey) {
 //        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
