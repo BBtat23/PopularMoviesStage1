@@ -2,24 +2,17 @@ package com.example.bea.popularmoviesstage1;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.bea.popularmoviesstage1.data.Movie;
 import com.example.bea.popularmoviesstage1.utils.JSONUtils;
 import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -119,27 +112,27 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             }
         }
 
-//    public static class ReviewMovieAsyncTask extends AsyncTask<String,Void,String>{
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... strings) {
-//            String idMovie = strings[0];
-//
-//            String reviewMovieString = null;
-//            String reviewMovieUrl =NetworkUtils.buildUrlReviewMovie(idMovie).toString();
-//            try {
-//                reviewMovieString = JSONUtils.movieReview(reviewMovieUrl);
-//                return reviewMovieString;
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            return reviewMovieString;
-//        }
-//    }
+    public static class ReviewMovieAsyncTask extends AsyncTask<String, Void, ArrayList<String>> {
+        @Override
+        protected void onPostExecute(ArrayList<String> reviewMovieArrayList) {
+            super.onPostExecute(reviewMovieArrayList);
+        }
+
+        @Override
+        protected ArrayList<String> doInBackground(String... strings) {
+            String idMovie = strings[0];
+
+            URL urlReviewMovie = NetworkUtils.buildUrlReviewMovie(idMovie);
+            try {
+                String reviewMovieConnection =NetworkUtils.getResponseFromHttpUrl(urlReviewMovie);
+                ArrayList<String> reviewMovieStringList = JSONUtils.movieReview(reviewMovieConnection);
+                return reviewMovieStringList;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
