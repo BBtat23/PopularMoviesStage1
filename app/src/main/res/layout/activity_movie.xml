@@ -74,11 +74,15 @@
                 android:layout_width="match_parent"
                 android:orientation="vertical">
             </com.example.bea.popularmoviesstage1.VideoListView>
-            <TextView
-                android:id="@+id/reviews"
+            <com.example.bea.popularmoviesstage1.ReviewListView
+                android:id="@+id/reviews_list_view"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent">
+
+            </com.example.bea.popularmoviesstage1.ReviewListView>
         </LinearLayout>
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
+
