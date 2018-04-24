@@ -10,11 +10,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.bea.popularmoviesstage1.utils.JSONUtils;
 import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
 
 import java.util.List;
+
+import static android.content.ContentUris.*;
 
 public class MovieProvider extends ContentProvider{
 
@@ -29,6 +33,8 @@ public class MovieProvider extends ContentProvider{
 
     /**URI matcher code for the content URI for a single favourite movie in the favourites table*/
     private static final int FAVOURITES_ID = 101;
+
+    static final String _ID = "_id";
 
     /**
      * UriMatcher object to match a content URI to a corresponding code.
@@ -85,7 +91,7 @@ public class MovieProvider extends ContentProvider{
                 // arguments that will fill in the "?". Since we have 1 question mark in the
                 // selection, we have 1 String in the selection arguments' String array.
                 selection = MovieContract.MovieEntry._ID + "=?";
-                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                selectionArgs = new String[]{String.valueOf(parseId(uri))};
 
                 // This will perform a query on the favourites table where the _id equals 3 to return a
                 // Cursor containing that row of the table.
@@ -109,31 +115,71 @@ public class MovieProvider extends ContentProvider{
     @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+        //Get readable database
+        SQLiteDatabase database = movieDbHelper.getWritableDatabase();
+
         final int match = sUriMatcher.match(uri);
-        switch (match){
+        switch (match) {
             case FAVOURITES:
-                return insertFavourite(uri, contentValues);
-                default:
-                    throw new IllegalArgumentException("Insertion is not supported for " + uri);
+               long id = database.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+               if (id > 0){
+                   Uri newUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+                   getContext().getContentResolver().notifyChange(newUri,null);
+                   return newUri;
+               }
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
-    }
 
-    /**
-     * Insert a favourite into the database with the given content values. Return the new content URI
-     * for that specific row in the database.
-     */
-    private Uri insertFavourite(Uri uri, ContentValues values){
-        //Check that the name is not null
-        List<String> listMovies = JSONUtils.JSONUtilsMovie(NetworkUtils.buildUrlPosterPath())
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(Uri uri,
+                      String selection, String[] selectionArgs) {
+        int count = 0;
+        //Get readable database
+        SQLiteDatabase database = movieDbHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case FAVOURITES:
+                count = database.delete(MovieContract.MovieEntry.TABLE_NAME,selection,selectionArgs);
+                break;
+
+            case FAVOURITES_ID:
+                selection = MovieContract.MovieEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                count = database.delete(MovieContract.MovieEntry.TABLE_NAME,selection,selectionArgs);
+
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri,null);
+        return count;
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues values,
+                      String selection, String[] selectionArgs) {
+        int count = 0;
+        //Get readable database
+        SQLiteDatabase database = movieDbHelper.getWritableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case FAVOURITES:
+                count = database.update(MovieContract.MovieEntry.TABLE_NAME,values,selection,selectionArgs);
+                break;
+
+            case FAVOURITES_ID:
+                selection = MovieContract.MovieEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                count = database.update(MovieContract.MovieEntry.TABLE_NAME,values,selection,selectionArgs);
+
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri,null);
+        return count;
     }
 }
