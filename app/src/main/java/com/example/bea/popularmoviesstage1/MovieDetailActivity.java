@@ -156,6 +156,18 @@ public class MovieDetailActivity extends AppCompatActivity {
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, ratingUser);
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_REVIEWS,reviewString);
+
+        //Insert a new row for favourite movie in the database, returning the ID of that new row.
+        long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null,values);
+
+        //Show a Toast message depending on whether or not the insertion was successful
+        if (newRowId == -1){
+            //If the row ID is -1, then there was an error with insertion.
+            Toast.makeText(this,"Error with saving pet",Toast.LENGTH_LONG).show();
+        }else{
+            //Otherwise, the insertion was successful and we can display a toast with the row ID
+            Toast.makeText(this,"Pet saved with row id: " + newRowId, Toast.LENGTH_LONG).show();
+        }
     }
 
 //    public void watchVideoTrailer(String movieKey) {
