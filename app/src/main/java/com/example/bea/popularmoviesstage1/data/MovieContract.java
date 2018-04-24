@@ -69,10 +69,24 @@ public final class MovieContract {
         public final static String COLUMN_MOVIE_POSTER ="poster";
 
         /**
-         * PosterPath of the movie.
+         * Reviews of the movie.
          *
          * Type: TEXT
          */
-        public final static String COLUMN_MOVIE_FAVOURITE ="favourite_movie";
+        public final static String COLUMN_MOVIE_REVIEWS ="reviews";
+
+        /**
+         * Release Date of the movie.
+         *
+         * Type: TEXT
+         */
+        public final static String COLUMN_MOVIE_RELEASE_DATE ="release";
+
+        /**
+         * Rating of the movie.
+         *
+         * Type: TEXT
+         */
+        public final static String COLUMN_MOVIE_RATING ="rating";
     }
 }
