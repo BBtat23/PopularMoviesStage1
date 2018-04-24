@@ -134,7 +134,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         favouriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                
+                insertMovie();
             }
         });
     }
