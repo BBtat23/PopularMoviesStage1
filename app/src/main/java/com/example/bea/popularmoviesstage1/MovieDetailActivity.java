@@ -1,6 +1,8 @@
 package com.example.bea.popularmoviesstage1;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -9,12 +11,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bea.popularmoviesstage1.data.Movie;
+import com.example.bea.popularmoviesstage1.data.MovieContract;
+import com.example.bea.popularmoviesstage1.data.MovieDbHelper;
 import com.example.bea.popularmoviesstage1.utils.JSONUtils;
 import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -47,6 +52,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     ArrayList<String> movieKeyReviewList;
     String movieKeyString;
     String reviewString;
+    Button favouriteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         mRatingUser = (TextView) findViewById(R.id.rating_user);
         mOverview = (TextView) findViewById(R.id.overview);
         imageViewPosterPath = (ImageView) findViewById(R.id.poster_path);
+        favouriteButton = (Button) findViewById(R.id.favourite_button);
 //        videoTextView = (TextView) findViewById(R.id.trailer1);
 //        reviewTextView = (TextView) findViewById(R.id.reviews);
 
@@ -123,6 +130,32 @@ public class MovieDetailActivity extends AppCompatActivity {
         ArrayAdapter<String> adapterReview = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,listReviews);
         listViewReviewMovie = (ListView) findViewById(R.id.reviews_list_view);
         listViewReviewMovie.setAdapter(adapterReview);
+
+        favouriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
+            }
+        });
+    }
+
+    private void insertMovie(){
+
+        //Create database Helper
+        MovieDbHelper movieDbHelper = new MovieDbHelper(this);
+
+        //Gets the database in write mode
+        SQLiteDatabase db = movieDbHelper.getWritableDatabase();
+
+        //Create a ContentValues object where column names are the keys,
+        //and pet attributes from the editor are the values.
+        ContentValues values = new ContentValues();
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, idMovie);
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, originalTitle);
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, posterPath);
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, ratingUser);
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_REVIEWS,reviewString);
     }
 
 //    public void watchVideoTrailer(String movieKey) {
