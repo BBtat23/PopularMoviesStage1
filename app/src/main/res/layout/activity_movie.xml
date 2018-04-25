@@ -81,6 +81,12 @@
                 android:layout_height="match_parent">
 
             </com.example.bea.popularmoviesstage1.ReviewListView>
+
+            <Button
+                android:id="@+id/favourite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Favourite"/>
         </LinearLayout>
     </ScrollView>
 
