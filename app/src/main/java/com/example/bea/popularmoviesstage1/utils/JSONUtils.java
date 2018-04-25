@@ -57,16 +57,17 @@ public class JSONUtils {
         // we should return `videoKeyStringList`, not `videoKeyString`
     }
 
-//    public static ArrayList<String> movieReview(String movieReviewString) throws JSONException {
-//        String reviewKeyString = null;
-//        ArrayList<String> reviewStringList = new ArrayList<>();
-//        JSONObject jsonObjectIdMovie = new JSONObject(movieReviewString);
-//        JSONArray reviewJsonArray = jsonObjectIdMovie.getJSONArray("results");
-//        for (int i = 0; i < reviewJsonArray.length(); i++) {
-//            JSONObject reviewObject = reviewJsonArray.getJSONObject(i);
-//            reviewKeyString = reviewObject.getString("content");
-//        }
-//        return reviewKeyString;
-//    }
+    public static ArrayList<String> movieReview(String movieReviewString) throws JSONException {
+        String reviewKeyString = null;
+        ArrayList<String> reviewStringList = new ArrayList<>();
+        JSONObject jsonObjectIdMovie = new JSONObject(movieReviewString);
+        JSONArray reviewJsonArray = jsonObjectIdMovie.getJSONArray("results");
+        for (int i = 0; i < reviewJsonArray.length(); i++) {
+            JSONObject reviewObject = reviewJsonArray.getJSONObject(i);
+            reviewKeyString = reviewObject.getString("content");
+            reviewStringList.add(reviewKeyString);
+        }
+        return reviewStringList;
+    }
 
 }
