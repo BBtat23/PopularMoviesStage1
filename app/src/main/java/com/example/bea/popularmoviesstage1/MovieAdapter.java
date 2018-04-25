@@ -1,3 +1,6 @@
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
