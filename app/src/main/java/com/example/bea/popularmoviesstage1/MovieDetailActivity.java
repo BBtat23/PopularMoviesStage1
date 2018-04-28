@@ -139,14 +139,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void insertMovie(){
+    public void insertMovie(){
 
-        //Create database Helper
-        MovieDbHelper movieDbHelper = new MovieDbHelper(this);
+//        //Create database Helper
+//        MovieDbHelper movieDbHelper = new MovieDbHelper(this);
+//
+//        //Gets the database in write mode
+//        SQLiteDatabase db = movieDbHelper.getWritableDatabase();
 
-        //Gets the database in write mode
-        SQLiteDatabase db = movieDbHelper.getWritableDatabase();
-
+        Uri mNewUri;
         //Create a ContentValues object where column names are the keys,
         //and pet attributes from the editor are the values.
         ContentValues values = new ContentValues();
@@ -157,16 +158,18 @@ public class MovieDetailActivity extends AppCompatActivity {
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_REVIEWS,reviewString);
 
-        //Insert a new row for favourite movie in the database, returning the ID of that new row.
-        long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null,values);
+        mNewUri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,values);
 
-        //Show a Toast message depending on whether or not the insertion was successful
-        if (newRowId == -1){
-            //If the row ID is -1, then there was an error with insertion.
-            Toast.makeText(this,"Error with saving pet",Toast.LENGTH_LONG).show();
-        }else{
-            //Otherwise, the insertion was successful and we can display a toast with the row ID
-            Toast.makeText(this,"Pet saved with row id: " + newRowId, Toast.LENGTH_LONG).show();
+//        //Insert a new row for favourite movie in the database, returning the ID of that new row.
+//        long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null,values);
+//
+//        //Show a Toast message depending on whether or not the insertion was successful
+//        if (newRowId == -1){
+//            //If the row ID is -1, then there was an error with insertion.
+//            Toast.makeText(this,"Error with saving pet",Toast.LENGTH_LONG).show();
+//        }else{
+//            //Otherwise, the insertion was successful and we can display a toast with the row ID
+//            Toast.makeText(this,"Pet saved with row id: " + newRowId, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -175,7 +178,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 //                Uri.parse("https://www.youtube.com/watch?v=" + movieKey));
 //        startActivity(youtubeIntent);
 //    }
-}
+//}
 
 //        listViewVideoMovie.setOnClickListener(new View.OnClickListener() {
 //            @Override
