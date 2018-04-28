@@ -2,6 +2,7 @@ package com.example.bea.popularmoviesstage1.data;
 
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -13,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.bea.popularmoviesstage1.MovieDetailActivity;
 import com.example.bea.popularmoviesstage1.utils.JSONUtils;
 import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
 
@@ -121,12 +123,15 @@ public class MovieProvider extends ContentProvider{
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case FAVOURITES:
-               long id = database.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
-               if (id > 0){
-                   Uri newUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
-                   getContext().getContentResolver().notifyChange(newUri,null);
-                   return newUri;
-               }
+
+//               long id = database.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+//               if (id > 0){
+//                   Uri newUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+//                   getContext().getContentResolver().notifyChange(newUri,null);
+//                   return newUri;
+//               }
+
+
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
