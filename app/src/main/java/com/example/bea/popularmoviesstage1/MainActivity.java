@@ -1,15 +1,22 @@
 package com.example.bea.popularmoviesstage1;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.bea.popularmoviesstage1.data.Movie;
+import com.example.bea.popularmoviesstage1.data.MovieContract;
+import com.example.bea.popularmoviesstage1.data.MovieProvider;
 import com.example.bea.popularmoviesstage1.utils.JSONUtils;
 import com.example.bea.popularmoviesstage1.utils.NetworkUtils;
 
@@ -18,8 +25,9 @@ import java.util.ArrayList;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickListener{
+public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickListener, LoaderManager.LoaderCallbacks<Object> {
 
+    private static final int URL_LOADER = 0;
     private List<Movie> movies = new ArrayList<>();
     private MovieAdapter mAdapter;
     private RecyclerView mRecyclerView;
@@ -29,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getLoaderManager().initLoader(URL_LOADER,null,MainActivity.this);
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_id);
@@ -58,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         startActivity(intent);
     }
-
 
     public class MovieAsyncTask extends AsyncTask<String, Void, List<Movie>> {
 
@@ -135,6 +144,49 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     }
 
     @Override
+    public Loader<Object> onCreateLoader(int i, Bundle bundle) {
+        return new AsyncTaskLoader<Cursor>(this) {
+            Cursor mFavouriteMovie = null;
+
+            @Override
+            protected void onStartLoading() {
+                if (mFavouriteMovie != null) {
+                    deliverResult(mFavouriteMovie);
+                } else {
+                    forceLoad();
+                }
+            }
+
+            @Override
+            public Cursor loadInBackground() {
+                try {
+                    return getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, null, null, null);
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to asynchronously load data.");
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            public void deliverResult(Cursor data) {
+                mFavouriteMovie = data;
+                super.deliverResult(data);
+            }
+
+        };
+    }
+
+    @Override
+    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapData(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Object> loader) {
+
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
@@ -147,6 +199,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             new MovieAsyncTask().execute("popular");
         } else if (itemId == R.id.topRated) {
             new MovieAsyncTask().execute("top_rated");
+        }else if (itemId == R.id.favourite){
+
         }
         return super.onOptionsItemSelected(item);
     }
