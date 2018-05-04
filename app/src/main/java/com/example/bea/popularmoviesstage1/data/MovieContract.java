@@ -52,7 +52,7 @@ public final class MovieContract {
          *
          * Type: Integer
          */
-        public final static String COLUMN_MOVIE_ID ="id";
+        public final static String COLUMN_MOVIE_ID = "id";
 
         /**
          * Title of the movie.
@@ -73,7 +73,7 @@ public final class MovieContract {
          *
          * Type: TEXT
          */
-        public final static String COLUMN_MOVIE_REVIEWS ="reviews";
+        public final static String COLUMN_MOVIE_OVERVIEWS ="overviews";
 
         /**
          * Release Date of the movie.
@@ -90,3 +90,4 @@ public final class MovieContract {
         public final static String COLUMN_MOVIE_RATING ="rating";
     }
 }
+
