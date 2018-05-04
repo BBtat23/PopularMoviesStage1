@@ -188,4 +188,5 @@ public class MovieProvider extends ContentProvider{
         getContext().getContentResolver().notifyChange(uri,null);
         return count;
     }
+
 }
