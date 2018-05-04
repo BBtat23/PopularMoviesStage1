@@ -90,4 +90,3 @@ public final class MovieContract {
         public final static String COLUMN_MOVIE_RATING ="rating";
     }
 }
-
