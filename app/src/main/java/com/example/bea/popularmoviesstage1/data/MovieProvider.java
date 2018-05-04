@@ -53,7 +53,7 @@ public class MovieProvider extends ContentProvider{
 
         // Add 2 content URIs to URI matcher
         sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY,MovieContract.PATH_FAVOURITES,FAVOURITES);
-        sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY,MovieContract.PATH_FAVOURITES,FAVOURITES_ID);
+        sUriMatcher.addURI(MovieContract.CONTENT_AUTHORITY,MovieContract.PATH_FAVOURITES + "/#",FAVOURITES_ID);
     }
     @Override
     public boolean onCreate() {
@@ -99,8 +99,8 @@ public class MovieProvider extends ContentProvider{
                 // Cursor containing that row of the table.
                 cursor = database.query(MovieContract.MovieEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
-                default:
-                    throw new IllegalArgumentException("Cannot query unknown URI " + uri);
+            default:
+                throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
         return cursor;
     }
@@ -121,21 +121,22 @@ public class MovieProvider extends ContentProvider{
         SQLiteDatabase database = movieDbHelper.getWritableDatabase();
 
         final int match = sUriMatcher.match(uri);
+        Uri newUri;
         switch (match) {
             case FAVOURITES:
-
-//               long id = database.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
-//               if (id > 0){
-//                   Uri newUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
-//                   getContext().getContentResolver().notifyChange(newUri,null);
-//                   return newUri;
-//               }
-
-
+               long id = database.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+               if (id > 0){
+                   newUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+                }else{
+                throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
             default:
-                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
+        getContext().getContentResolver().notifyChange(uri,null);
 
+        return newUri;//Return new uri
     }
 
     @Override
