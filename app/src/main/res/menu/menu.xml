@@ -9,7 +9,7 @@
         android:id="@+id/topRated"
         android:orderInCategory="2"/>
     <item
-        android:title="@string/settings"
-        android:id="@+id/settings"
+        android:title="@string/favourites"
+        android:id="@+id/favourites"
         android:orderInCategory="3"/>
 </menu>
