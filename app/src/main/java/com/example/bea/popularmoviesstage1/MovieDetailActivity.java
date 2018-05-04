@@ -103,17 +103,17 @@ public class MovieDetailActivity extends AppCompatActivity {
         listViewVideoMovie = (ListView) findViewById(R.id.trailer_list_view);
         listViewVideoMovie.setAdapter(adapter);
 
-       listViewVideoMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
-           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-               //Here I take the text from the listView depending on the position
-               String videoString = (String)adapterView.getItemAtPosition(i);
-               //I make an intent to launch youtube app and make the url
-               Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com/watch?v=" + videoString));
-               //Launch the intent
-               startActivity(youtubeIntent);
-           }
-       });
+        listViewVideoMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Here I take the text from the listView depending on the position
+                String videoString = (String)adapterView.getItemAtPosition(i);
+                //I make an intent to launch youtube app and make the url
+                Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.youtube.com/watch?v=" + videoString));
+                //Launch the intent
+                startActivity(youtubeIntent);
+            }
+        });
         try {
             movieKeyReviewList = new MainActivity.ReviewMovieAsyncTask().execute(idMovie).get();
         } catch (InterruptedException e) {
@@ -156,7 +156,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, posterPath);
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_RATING, ratingUser);
         values.put(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE, releaseDate);
-        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_REVIEWS,reviewString);
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEWS,overView);
 
         mNewUri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI,values);
 
@@ -170,8 +170,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 //        }else{
 //            //Otherwise, the insertion was successful and we can display a toast with the row ID
 //            Toast.makeText(this,"Pet saved with row id: " + newRowId, Toast.LENGTH_LONG).show();
-        }
     }
+}
 
 //    public void watchVideoTrailer(String movieKey) {
 //        Intent youtubeIntent = new Intent(Intent.ACTION_VIEW,
